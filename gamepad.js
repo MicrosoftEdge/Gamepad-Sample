@@ -1,13 +1,7 @@
-var g_gamepadVisualizers = [];
-
 function Init() {
   if (navigator.getGamepads === undefined) {
     // MATTES: TELL THEM TO UPGRADE THEIR BROWSER.
   } else {
-    for (var i = 0; i < 4; i++) {
-      g_gamepadVisualizers[i] = new StandardGamepadVisualizer(i);
-    }
-
     window.requestAnimationFrame(runAnimation);
   }
 }
@@ -19,9 +13,12 @@ function runAnimation() {
   var gamepads = navigator.getGamepads();
   for (var i = 0; i < gamepads.length; ++i) {
     var pad = gamepads[i];
-    var gpVisualizer = g_gamepadVisualizers[i];
-    gpVisualizer.UpdateView(pad);
-    UpdateGamepadStateTable(pad, i);
+    if (pad != undefined) {
+      var fStandarMapping = (pad.mapping != undefined && pad.mapping === "standard");
+      var gpVisualizer = fStandarMapping ? new StandardGamepadVisualizer(i) : new GenericGamepadVisualizer(i);
+      gpVisualizer.UpdateView(pad);
+      UpdateGamepadStateTable(pad, i);
+    }
   }
 
   window.requestAnimationFrame(runAnimation);

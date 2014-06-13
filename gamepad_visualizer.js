@@ -85,10 +85,7 @@ function AnalogButtonVisualizer(elemId) {
     }
     this.value = val;
     this.fIsPressed = fIsPressed;
-    this.onValueChange();
-  }
 
-  this.onValueChange = function AnalogButtonVisualizer_onValueChange() {
     var elem = document.getElementById(this.elemId);
     this.setElemStyles(elem);
   }
@@ -118,15 +115,8 @@ function DigitalButtonVisualizer(elemId) {
   }
 
   this.setValue = function DigitalButtonVisualizer_setValue(val, fIsPressed) {
-    if (val != 0.0 && val != 1.0) {
-      val = 1.0;
-    }
     this.value = val;
     this.fIsPressed = fIsPressed;
-    this.onValueChange();
-  }
-
-  this.onValueChange = function DigitalButtonVisualizer_onValueChange() {
     var elem = document.getElementById(this.elemId);
     this.setElemStyles(elem);
   }
@@ -176,13 +166,50 @@ function StandardGamepadVisualizer(idx) {
         this.leftTrigger.setValue(buttonLeftTrigger.value, buttonLeftTrigger.pressed);
         this.rightTrigger.setValue(buttonRightTrigger.value, buttonRightTrigger.pressed);
         this.UpdateButtons(pad);
-      } else if (pad.mapping === "" /*firefox*/) {
+      }
+    } else {
+      containerElem.innerHTML = "<div class='gpNotConnectedText'>Gamepad not connected.</div>";
+    }
+  }
+
+  this.UpdateButtons = function StandardGamepadVisualizer_UpdateButtons(pad) {
+    for (var i = 0; i < this.buttonMap.length; i++) {
+      var visualizer = this.buttonMap[i].visualizer;
+      if (this.buttonMap[i].buttonIdx < pad.buttons.length) {
+        var idx = this.buttonMap[i].buttonIdx;
+        var button = pad.buttons[idx];
+        visualizer.setValue(button.value, button.pressed);
+      }
+    }
+  }
+
+  this.Init = function _Init() {
+    for (var i = 0; i < this.buttonMap.length; i++) {
+      var elemId = "gp" + this.idx + this.buttonMap[i].elemId;
+      this.buttonMap[i].visualizer = new DigitalButtonVisualizer(elemId);
+    }
+  }
+  this.Init();
+}
+
+
+// --------------------------------------
+// GenericGamepadVisualizer
+// --------------------------------------
+function GenericGamepadVisualizer(idx) {
+  this.idx = idx;
+  this.containerElemId = "gp" + idx + "Cell";
+
+  this.UpdateView = function StandardGamepadVisualizer_UpdateView(pad) {
+    var containerElem = document.getElementById(this.containerElemId);
+    if (pad != undefined) {
+      if (pad.mapping === "" /*firefox*/) {
         // Firefox hack: Firefox does not correctly fill in the mapping field. They leave it blank "".
         //containerElem.innerHTML = "<div class='gpNotConnectedText'>Unknown gamepad type connected.</div>";
 
         var strInject = "<table><tr>";
         var buttonTemplateStr = '<td><div id="gp[#]" class="AnalogButtonVisualizer">[BTN#]<div id="val"></div></div></td>';
-        
+
         for (var idx = 0; idx < pad.buttons.length; idx++) {
           var elemId = "gp" + this.idx + "Btn" + idx;
           var buttonStr = buttonTemplateStr.replace(/gp\[#\]/g, elemId);
@@ -192,7 +219,7 @@ function StandardGamepadVisualizer(idx) {
         strInject += "</tr></table><table><tr>";
 
         var axisTemplateStr = '<td><div id="gp[#]" class="AxisVisualizer"><div id="val"></div></div></td>';
-        for (var idx = 0; idx < pad.axes.length; idx+=2) {
+        for (var idx = 0; idx < pad.axes.length; idx += 2) {
           var elemId = "gp" + this.idx + "Axis" + idx;
           var axisStr = axisTemplateStr.replace(/gp\[#\]/g, elemId);
           strInject += axisStr;
@@ -222,25 +249,6 @@ function StandardGamepadVisualizer(idx) {
       containerElem.innerHTML = "<div class='gpNotConnectedText'>Gamepad not connected.</div>";
     }
   }
-
-  this.UpdateButtons = function StandardGamepadVisualizer_UpdateButtons(pad) {
-    for (var i = 0; i < this.buttonMap.length; i++) {
-      var visualizer = this.buttonMap[i].visualizer;
-      if (this.buttonMap[i].buttonIdx < pad.buttons.length) {
-        var idx = this.buttonMap[i].buttonIdx;
-        var button = pad.buttons[idx];
-        visualizer.setValue(button.value, button.pressed);
-      }
-    }
-  }
-
-  this.Init = function _Init() {
-    for (var i = 0; i < this.buttonMap.length; i++) {
-      var elemId = "gp" + this.idx + this.buttonMap[i].elemId;
-      this.buttonMap[i].visualizer = new DigitalButtonVisualizer(elemId);
-    }
-  }
-  this.Init();
 }
 
 
