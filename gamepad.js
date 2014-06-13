@@ -11,12 +11,13 @@ function Init() {
 // --------------------------------------
 function runAnimation() {
   var gamepads = navigator.getGamepads();
-  for (var i = 0; i < gamepads.length; ++i) {
+  for (var i = 0; i < gamepads.length; i++) {
     var pad = gamepads[i];
     if (pad != undefined) {
       var fStandarMapping = (pad.mapping != undefined && pad.mapping === "standard");
-      var gpVisualizer = fStandarMapping ? new StandardGamepadVisualizer(i) : new GenericGamepadVisualizer(i);
+      var gpVisualizer = fStandarMapping ? new StandardGamepadVisualizer(i) : new GenericGamepadVisualizer(pad);
       gpVisualizer.UpdateView(pad);
+
       UpdateGamepadStateTable(pad, i);
     }
   }

@@ -135,20 +135,20 @@ function StandardGamepadVisualizer(idx) {
 
   this.buttonMap = [
     //              elemId is prefixed with "gp#"   
-    { buttonIdx: 0, elemId: "BtnA", visualizer: null },
-    { buttonIdx: 1, elemId: "BtnB", visualizer: null },
-    { buttonIdx: 2, elemId: "BtnX", visualizer: null },
-    { buttonIdx: 3, elemId: "BtnY", visualizer: null },
-    { buttonIdx: 4, elemId: "BtnLB", visualizer: null },
-    { buttonIdx: 5, elemId: "BtnRB", visualizer: null },
-    { buttonIdx: 8, elemId: "BtnSelect", visualizer: null },
-    { buttonIdx: 9, elemId: "BtnStart", visualizer: null },
-    { buttonIdx: 10, elemId: "BtnLThumb", visualizer: null },
-    { buttonIdx: 11, elemId: "BtnRThumb", visualizer: null },
-    { buttonIdx: 12, elemId: "BtnDU", visualizer: null },
-    { buttonIdx: 13, elemId: "BtnDD", visualizer: null },
-    { buttonIdx: 14, elemId: "BtnDL", visualizer: null },
-    { buttonIdx: 15, elemId: "BtnDR", visualizer: null }
+    { buttonIdx: 0, elemId: "BtnA" },
+    { buttonIdx: 1, elemId: "BtnB" },
+    { buttonIdx: 2, elemId: "BtnX" },
+    { buttonIdx: 3, elemId: "BtnY" },
+    { buttonIdx: 4, elemId: "BtnLB" },
+    { buttonIdx: 5, elemId: "BtnRB" },
+    { buttonIdx: 8, elemId: "BtnSelect" },
+    { buttonIdx: 9, elemId: "BtnStart" },
+    { buttonIdx: 10, elemId: "BtnLThumb" },
+    { buttonIdx: 11, elemId: "BtnRThumb" },
+    { buttonIdx: 12, elemId: "BtnDU" },
+    { buttonIdx: 13, elemId: "BtnDD" },
+    { buttonIdx: 14, elemId: "BtnDL" },
+    { buttonIdx: 15, elemId: "BtnDR" }
   ];
 
   this.UpdateView = function StandardGamepadVisualizer_UpdateView(pad) {
@@ -196,38 +196,37 @@ function StandardGamepadVisualizer(idx) {
 // --------------------------------------
 // GenericGamepadVisualizer
 // --------------------------------------
-function GenericGamepadVisualizer(idx) {
-  this.idx = idx;
-  this.containerElemId = "gp" + idx + "Cell";
+function GenericGamepadVisualizer(pad) {
+  this.idx = pad.index;
+  this.containerElemId = "gp" + this.idx + "Cell";
 
-  this.UpdateView = function StandardGamepadVisualizer_UpdateView(pad) {
+  this.Init = function GenericGamepadVisualizer_Init(pad) {
+    var containerElem = document.getElementById(this.containerElemId);
+    var strInject = "";
+
+    var buttonTemplateStr = '<div id="gp[#]" class="AnalogButtonVisualizer VisualizerGeneric" style="">[BTN#]<div id="val"></div></div>';
+    for (var idx = 0; idx < pad.buttons.length; idx++) {
+      var elemId = "gp" + this.idx + "Btn" + idx;
+      var buttonStr = buttonTemplateStr.replace(/gp\[#\]/g, elemId);
+      buttonStr = buttonStr.replace(/\[BTN#\]/g, "B" + idx);
+      strInject += buttonStr;
+    }
+    strInject += "<br>";
+
+    var axisTemplateStr = '<div id="gp[#]" class="AxisVisualizer VisualizerGeneric"><div id="val"></div></div>';
+    for (var idx = 0; idx < pad.axes.length; idx += 2) {
+      var elemId = "gp" + this.idx + "Axis" + idx;
+      var axisStr = axisTemplateStr.replace(/gp\[#\]/g, elemId);
+      strInject += axisStr;
+    }
+
+    containerElem.innerHTML = strInject;
+  }
+
+  this.UpdateView = function GenericGamepadVisualizer_UpdateView(pad) {
     var containerElem = document.getElementById(this.containerElemId);
     if (pad != undefined) {
       if (pad.mapping === "" /*firefox*/) {
-        // Firefox hack: Firefox does not correctly fill in the mapping field. They leave it blank "".
-        //containerElem.innerHTML = "<div class='gpNotConnectedText'>Unknown gamepad type connected.</div>";
-
-        var strInject = "<table><tr>";
-        var buttonTemplateStr = '<td><div id="gp[#]" class="AnalogButtonVisualizer">[BTN#]<div id="val"></div></div></td>';
-
-        for (var idx = 0; idx < pad.buttons.length; idx++) {
-          var elemId = "gp" + this.idx + "Btn" + idx;
-          var buttonStr = buttonTemplateStr.replace(/gp\[#\]/g, elemId);
-          buttonStr = buttonStr.replace(/\[BTN#\]/g, "B" + idx);
-          strInject += buttonStr;
-        }
-        strInject += "</tr></table><table><tr>";
-
-        var axisTemplateStr = '<td><div id="gp[#]" class="AxisVisualizer"><div id="val"></div></div></td>';
-        for (var idx = 0; idx < pad.axes.length; idx += 2) {
-          var elemId = "gp" + this.idx + "Axis" + idx;
-          var axisStr = axisTemplateStr.replace(/gp\[#\]/g, elemId);
-          strInject += axisStr;
-        }
-        strInject += "</tr></table>";
-
-        containerElem.innerHTML = strInject;
-
         for (var idx = 0; idx < pad.buttons.length; idx++) {
           var elemId = "gp" + this.idx + "Btn" + idx;
           var visualizer = new AnalogButtonVisualizer(elemId);
@@ -249,6 +248,7 @@ function GenericGamepadVisualizer(idx) {
       containerElem.innerHTML = "<div class='gpNotConnectedText'>Gamepad not connected.</div>";
     }
   }
+  this.Init(pad);
 }
 
 

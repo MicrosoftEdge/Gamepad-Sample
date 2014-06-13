@@ -37,10 +37,15 @@
   text-align: center;
 }
 
-  .AnalogButtonVisualizer #val {
-    font-size: 9pt;
-    font-weight: normal;
-  }
+.VisualizerGeneric {
+  float:left;
+  margin:5px;
+}
+
+.AnalogButtonVisualizer #val {
+  font-size: 9pt;
+  font-weight: normal;
+}
 
 .oval {
   border: solid 1px #0094FF;
