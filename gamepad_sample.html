@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link rel="stylesheet" type="text/css" href="gamepad.css">
+</head>
+<body onload="Init();">
+  <table id="gamepadStateTable" cellspacing="0">
+    <tr>Gamepad State Table</th></tr>
+    <tr><td>Idx</td><td>Timestamp</td><td>Mapping</td><td>Id</td></tr>
+    <tr id="gpStateTableRow0"></tr>
+    <tr id="gpStateTableRow1"></tr>
+    <tr id="gpStateTableRow2"></tr>
+    <tr id="gpStateTableRow3"></tr>
+  </table>
+
+  <br /><br />
+
+  <table class="gpTable">
+    <tr><td id="gp0Cell" class="gpTableCell">Gamepad not connected</td></tr>
+    <tr><td id="gp1Cell" class="gpTableCell">Gamepad not connected</td></tr>
+    <tr><td id="gp2Cell" class="gpTableCell">Gamepad not connected</td></tr>
+    <tr><td id="gp3Cell" class="gpTableCell">Gamepad not connected</td></tr>
+  </table>
+
+  <script src="gamepad.js"></script>
+  <script src="gamepad_visualizer.js"></script>
+</body>
+</html>
