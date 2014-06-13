@@ -1,6 +1,7 @@
 function Init() {
   if (navigator.getGamepads === undefined) {
-    // MATTES: TELL THEM TO UPGRADE THEIR BROWSER.
+    document.getElementById("gamepadSupportedDiv").style.display = "block";
+    document.getElementById("gamepadDisplayDiv").style.display = "none";
   } else {
     window.requestAnimationFrame(runAnimation);
   }
@@ -9,11 +10,19 @@ function Init() {
 // --------------------------------------
 // Animation loop
 // --------------------------------------
+var g_fButtonPressedOnAnyGamepadEver = false;
 function runAnimation() {
   var gamepads = navigator.getGamepads();
   for (var i = 0; i < gamepads.length; i++) {
     var pad = gamepads[i];
     if (pad != undefined) {
+
+      if (g_fButtonPressedOnAnyGamepadEver === false) {
+        document.getElementById("buttonNeverPressedDiv").style.display = "none";
+        document.getElementById("buttonPressedDiv").style.display = "block";
+        g_fButtonPressedOnAnyGamepadEver = true;
+      }
+
       var fStandarMapping = (pad.mapping != undefined && pad.mapping === "standard");
       var gpVisualizer = fStandarMapping ? new StandardGamepadVisualizer(i) : new GenericGamepadVisualizer(pad);
       gpVisualizer.UpdateView(pad);

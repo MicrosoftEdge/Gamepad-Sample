@@ -1,4 +1,138 @@
 // --------------------------------------
+// StandardGamepadVisualizer
+// --------------------------------------
+function StandardGamepadVisualizer(idx) {
+  this.idx = idx;
+  this.containerElemId = "gp" + idx + "Cell";
+  this.leftThumbVisualizer = new AxisVisualizer("gp" + idx + "leftThumb");
+  this.rightThumbVisualizer = new AxisVisualizer("gp" + idx + "rightThumb");
+  this.leftTriggerVisualizer = new AnalogButtonVisualizer("gp" + idx + "LT");
+  this.rightTriggerVisualizer = new AnalogButtonVisualizer("gp" + idx + "RT");
+
+  this.UpdateView = function StandardGamepadVisualizer_UpdateView(pad) {
+    var containerElem = document.getElementById(this.containerElemId);
+
+    if (pad != undefined) {
+      if (pad.mapping === "standard") {
+        var templateStr = g_starndardGamepadVisualizerTemplate.replace(/gp\[#\]/g, "gp" + this.idx);
+        containerElem.innerHTML = templateStr;
+
+        this.leftThumbVisualizer.setXAxisValue(pad.axes[0]);
+        this.leftThumbVisualizer.setYAxisValue(pad.axes[1]);
+
+        this.rightThumbVisualizer.setXAxisValue(pad.axes[2]);
+        this.rightThumbVisualizer.setYAxisValue(pad.axes[3]);
+
+        var buttonLeftTrigger = pad.buttons[6];
+        var buttonRightTrigger = pad.buttons[7];
+
+        this.leftTriggerVisualizer.setValue(buttonLeftTrigger.value, buttonLeftTrigger.pressed);
+        this.rightTriggerVisualizer.setValue(buttonRightTrigger.value, buttonRightTrigger.pressed);
+
+        this.UpdateButtons(pad);
+      }
+    } else {
+      containerElem.innerHTML = "<div class='gpNotConnectedText'>Gamepad not connected.</div>";
+    }
+  }
+
+  this.buttonMap = [
+    { buttonIdx: 0, elemIdTemplate: "gp[#]BtnA" },
+    { buttonIdx: 1, elemIdTemplate: "gp[#]BtnB" },
+    { buttonIdx: 2, elemIdTemplate: "gp[#]BtnX" },
+    { buttonIdx: 3, elemIdTemplate: "gp[#]BtnY" },
+    { buttonIdx: 4, elemIdTemplate: "gp[#]BtnLB" },
+    { buttonIdx: 5, elemIdTemplate: "gp[#]BtnRB" },
+    { buttonIdx: 8, elemIdTemplate: "gp[#]BtnSelect" },
+    { buttonIdx: 9, elemIdTemplate: "gp[#]BtnStart" },
+    { buttonIdx: 10, elemIdTemplate: "gp[#]BtnLThumb" },
+    { buttonIdx: 11, elemIdTemplate: "gp[#]BtnRThumb" },
+    { buttonIdx: 12, elemIdTemplate: "gp[#]BtnDU" },
+    { buttonIdx: 13, elemIdTemplate: "gp[#]BtnDD" },
+    { buttonIdx: 14, elemIdTemplate: "gp[#]BtnDL" },
+    { buttonIdx: 15, elemIdTemplate: "gp[#]BtnDR" }
+  ];
+
+  this.UpdateButtons = function StandardGamepadVisualizer_UpdateButtons(pad) {
+    for (var i = 0; i < this.buttonMap.length; i++) {
+      var visualizer = this.buttonMap[i].visualizer;
+      if (this.buttonMap[i].buttonIdx < pad.buttons.length) {
+        var idx = this.buttonMap[i].buttonIdx;
+        var button = pad.buttons[idx];
+        visualizer.setValue(button.value, button.pressed);
+      }
+    }
+  }
+
+  this.Init = function _Init() {
+    for (var i = 0; i < this.buttonMap.length; i++) {
+      var elemId = this.buttonMap[i].elemIdTemplate.replace(/\[#\]/g, this.idx);
+      this.buttonMap[i].visualizer = new DigitalButtonVisualizer(elemId);
+    }
+  }
+  this.Init();
+}
+
+
+// --------------------------------------
+// GenericGamepadVisualizer
+// --------------------------------------
+function GenericGamepadVisualizer(pad) {
+  this.idx = pad.index;
+  this.containerElemId = "gp" + this.idx + "Cell";
+
+  this.Init = function GenericGamepadVisualizer_Init(pad) {
+    var containerElem = document.getElementById(this.containerElemId);
+    var strInject = "";
+
+    var buttonTemplateStr = '<div id="gp[#]" class="AnalogButtonVisualizer VisualizerGeneric" style="">[BTN#]<div id="val"></div></div>';
+    for (var idx = 0; idx < pad.buttons.length; idx++) {
+      var elemId = "gp" + this.idx + "Btn" + idx;
+      var buttonStr = buttonTemplateStr.replace(/gp\[#\]/g, elemId);
+      buttonStr = buttonStr.replace(/\[BTN#\]/g, "B" + idx);
+      strInject += buttonStr;
+    }
+    strInject += "<br>";
+
+    var axisTemplateStr = '<div id="gp[#]" class="AxisVisualizer VisualizerGeneric"><div id="val"></div></div>';
+    for (var idx = 0; idx < pad.axes.length; idx += 2) {
+      var elemId = "gp" + this.idx + "Axis" + idx;
+      var axisStr = axisTemplateStr.replace(/gp\[#\]/g, elemId);
+      strInject += axisStr;
+    }
+
+    containerElem.innerHTML = strInject;
+  }
+
+  this.UpdateView = function GenericGamepadVisualizer_UpdateView(pad) {
+    var containerElem = document.getElementById(this.containerElemId);
+    if (pad != undefined) {
+      if (pad.mapping === "" /*firefox*/) {
+        for (var idx = 0; idx < pad.buttons.length; idx++) {
+          var elemId = "gp" + this.idx + "Btn" + idx;
+          var visualizer = new AnalogButtonVisualizer(elemId);
+          var button = pad.buttons[idx];
+          visualizer.setValue(button.value, button.pressed);
+        }
+
+        for (var idx = 0; idx < pad.axes.length; idx += 2) {
+          var elemId = "gp" + this.idx + "Axis" + idx;
+          var visualizer = new AxisVisualizer(elemId);
+          visualizer.setXAxisValue(pad.axes[idx]);
+          if (pad.axes[idx + 1] != undefined) {
+            visualizer.setYAxisValue(pad.axes[idx + 1]);
+          }
+        }
+
+      }
+    } else {
+      containerElem.innerHTML = "<div class='gpNotConnectedText'>Gamepad not connected.</div>";
+    }
+  }
+  this.Init(pad);
+}
+
+// --------------------------------------
 // AxisVisualizer
 // --------------------------------------
 function AxisVisualizer(elemId) {
@@ -121,136 +255,6 @@ function DigitalButtonVisualizer(elemId) {
     this.setElemStyles(elem);
   }
 }
-
-// --------------------------------------
-// StandardGamepadVisualizer
-// --------------------------------------
-function StandardGamepadVisualizer(idx) {
-  this.idx = idx;
-  this.containerElemId = "gp" + idx + "Cell";
-  this.leftThumb = new AxisVisualizer("gp" + idx + "leftThumb");
-  this.rightThumb = new AxisVisualizer("gp" + idx + "rightThumb");
-  this.leftTrigger = new AnalogButtonVisualizer("gp" + idx + "LT");
-  this.rightTrigger = new AnalogButtonVisualizer("gp" + idx + "RT");
-
-  this.buttonMap = [
-    //              elemId is prefixed with "gp#"   
-    { buttonIdx: 0, elemId: "BtnA" },
-    { buttonIdx: 1, elemId: "BtnB" },
-    { buttonIdx: 2, elemId: "BtnX" },
-    { buttonIdx: 3, elemId: "BtnY" },
-    { buttonIdx: 4, elemId: "BtnLB" },
-    { buttonIdx: 5, elemId: "BtnRB" },
-    { buttonIdx: 8, elemId: "BtnSelect" },
-    { buttonIdx: 9, elemId: "BtnStart" },
-    { buttonIdx: 10, elemId: "BtnLThumb" },
-    { buttonIdx: 11, elemId: "BtnRThumb" },
-    { buttonIdx: 12, elemId: "BtnDU" },
-    { buttonIdx: 13, elemId: "BtnDD" },
-    { buttonIdx: 14, elemId: "BtnDL" },
-    { buttonIdx: 15, elemId: "BtnDR" }
-  ];
-
-  this.UpdateView = function StandardGamepadVisualizer_UpdateView(pad) {
-    var containerElem = document.getElementById(this.containerElemId);
-    if (pad != undefined) {
-      if (pad.mapping === "standard") {
-        var templateStr = g_starndardGamepadVisualizerTemplate.replace(/gp\[#\]/g, "gp" + this.idx);
-        containerElem.innerHTML = templateStr;
-        this.leftThumb.setXAxisValue(pad.axes[0]);
-        this.leftThumb.setYAxisValue(pad.axes[1]);
-        this.rightThumb.setXAxisValue(pad.axes[2]);
-        this.rightThumb.setYAxisValue(pad.axes[3]);
-        var buttonLeftTrigger = pad.buttons[6];
-        var buttonRightTrigger = pad.buttons[7];
-        this.leftTrigger.setValue(buttonLeftTrigger.value, buttonLeftTrigger.pressed);
-        this.rightTrigger.setValue(buttonRightTrigger.value, buttonRightTrigger.pressed);
-        this.UpdateButtons(pad);
-      }
-    } else {
-      containerElem.innerHTML = "<div class='gpNotConnectedText'>Gamepad not connected.</div>";
-    }
-  }
-
-  this.UpdateButtons = function StandardGamepadVisualizer_UpdateButtons(pad) {
-    for (var i = 0; i < this.buttonMap.length; i++) {
-      var visualizer = this.buttonMap[i].visualizer;
-      if (this.buttonMap[i].buttonIdx < pad.buttons.length) {
-        var idx = this.buttonMap[i].buttonIdx;
-        var button = pad.buttons[idx];
-        visualizer.setValue(button.value, button.pressed);
-      }
-    }
-  }
-
-  this.Init = function _Init() {
-    for (var i = 0; i < this.buttonMap.length; i++) {
-      var elemId = "gp" + this.idx + this.buttonMap[i].elemId;
-      this.buttonMap[i].visualizer = new DigitalButtonVisualizer(elemId);
-    }
-  }
-  this.Init();
-}
-
-
-// --------------------------------------
-// GenericGamepadVisualizer
-// --------------------------------------
-function GenericGamepadVisualizer(pad) {
-  this.idx = pad.index;
-  this.containerElemId = "gp" + this.idx + "Cell";
-
-  this.Init = function GenericGamepadVisualizer_Init(pad) {
-    var containerElem = document.getElementById(this.containerElemId);
-    var strInject = "";
-
-    var buttonTemplateStr = '<div id="gp[#]" class="AnalogButtonVisualizer VisualizerGeneric" style="">[BTN#]<div id="val"></div></div>';
-    for (var idx = 0; idx < pad.buttons.length; idx++) {
-      var elemId = "gp" + this.idx + "Btn" + idx;
-      var buttonStr = buttonTemplateStr.replace(/gp\[#\]/g, elemId);
-      buttonStr = buttonStr.replace(/\[BTN#\]/g, "B" + idx);
-      strInject += buttonStr;
-    }
-    strInject += "<br>";
-
-    var axisTemplateStr = '<div id="gp[#]" class="AxisVisualizer VisualizerGeneric"><div id="val"></div></div>';
-    for (var idx = 0; idx < pad.axes.length; idx += 2) {
-      var elemId = "gp" + this.idx + "Axis" + idx;
-      var axisStr = axisTemplateStr.replace(/gp\[#\]/g, elemId);
-      strInject += axisStr;
-    }
-
-    containerElem.innerHTML = strInject;
-  }
-
-  this.UpdateView = function GenericGamepadVisualizer_UpdateView(pad) {
-    var containerElem = document.getElementById(this.containerElemId);
-    if (pad != undefined) {
-      if (pad.mapping === "" /*firefox*/) {
-        for (var idx = 0; idx < pad.buttons.length; idx++) {
-          var elemId = "gp" + this.idx + "Btn" + idx;
-          var visualizer = new AnalogButtonVisualizer(elemId);
-          var button = pad.buttons[idx];
-          visualizer.setValue(button.value, button.pressed);
-        }
-
-        for (var idx = 0; idx < pad.axes.length; idx += 2) {
-          var elemId = "gp" + this.idx + "Axis" + idx;
-          var visualizer = new AxisVisualizer(elemId);
-          visualizer.setXAxisValue(pad.axes[idx]);
-          if (pad.axes[idx + 1] != undefined) {
-            visualizer.setYAxisValue(pad.axes[idx + 1]);
-          }
-        }
-
-      }
-    } else {
-      containerElem.innerHTML = "<div class='gpNotConnectedText'>Gamepad not connected.</div>";
-    }
-  }
-  this.Init(pad);
-}
-
 
 g_starndardGamepadVisualizerTemplate = '\
   <table class="gamepadVisualizer">\

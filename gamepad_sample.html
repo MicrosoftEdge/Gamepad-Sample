@@ -6,23 +6,30 @@
   <link rel="stylesheet" type="text/css" href="gamepad.css">
 </head>
 <body onload="Init();">
-  <table id="gamepadStateTable" cellspacing="0">
-    <tr>Gamepad State Table</th></tr>
-    <tr><td>Idx</td><td>Timestamp</td><td>Mapping</td><td>Id</td></tr>
-    <tr id="gpStateTableRow0"></tr>
-    <tr id="gpStateTableRow1"></tr>
-    <tr id="gpStateTableRow2"></tr>
-    <tr id="gpStateTableRow3"></tr>
-  </table>
+  <div id="gamepadSupportedDiv" style="display:none;">Your browser does not support Gamepad API. Please update it.</div>
 
-  <br /><br />
+  <div id="gamepadDisplayDiv">
+    <div id="buttonNeverPressedDiv">Please press a button on any gamepad.</div>
+    <div id="buttonPressedDiv" style="display:none;">
+      <table id="gamepadStateTable" cellspacing="0">
+        <tr>Gamepad State Table</tr>
+        <tr><td>Idx</td><td>Timestamp</td><td>Mapping</td><td>Id</td></tr>
+        <tr id="gpStateTableRow0"></tr>
+        <tr id="gpStateTableRow1"></tr>
+        <tr id="gpStateTableRow2"></tr>
+        <tr id="gpStateTableRow3"></tr>
+      </table>
 
-  <table class="gpTable">
-    <tr><td id="gp0Cell" class="gpTableCell">Gamepad not connected</td></tr>
-    <tr><td id="gp1Cell" class="gpTableCell">Gamepad not connected</td></tr>
-    <tr><td id="gp2Cell" class="gpTableCell">Gamepad not connected</td></tr>
-    <tr><td id="gp3Cell" class="gpTableCell">Gamepad not connected</td></tr>
-  </table>
+      <br /><br />
+
+      <table class="gpTable">
+        <tr><td id="gp0Cell" class="gpTableCell">Gamepad not connected</td></tr>
+        <tr><td id="gp1Cell" class="gpTableCell">Gamepad not connected</td></tr>
+        <tr><td id="gp2Cell" class="gpTableCell">Gamepad not connected</td></tr>
+        <tr><td id="gp3Cell" class="gpTableCell">Gamepad not connected</td></tr>
+      </table>
+    </div>
+  </div>
 
   <script src="gamepad.js"></script>
   <script src="gamepad_visualizer.js"></script>

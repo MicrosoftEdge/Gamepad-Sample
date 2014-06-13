@@ -66,10 +66,6 @@
   line-height: 20px;
 }
 
-.nexus {
-  margin-left: 40px;
-}
-
 .DPad {
   position: relative;
   left: 10px;
@@ -116,13 +112,10 @@
   width: 80px;
 }
 
-#fpsIndicator {
-  border: solid black 2px;
-  border-radius: 5px;
-  width: 30px;
-  height: 30px;
-  font-size: 25px;
-  line-height: 30px;
-  text-align: center;
-  float: right;
+#gamepadSupportedDiv {
+  font-size:4em;
+}
+
+#buttonNeverPressedDiv {
+  font-size:3em;
 }
