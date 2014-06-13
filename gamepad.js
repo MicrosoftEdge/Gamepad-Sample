@@ -11,6 +11,7 @@ function Init() {
 // Animation loop
 // --------------------------------------
 var g_fButtonPressedOnAnyGamepadEver = false;
+var g_gamepadVisualizers = new Array();
 function runAnimation() {
   var gamepads = navigator.getGamepads();
   for (var i = 0; i < gamepads.length; i++) {
@@ -24,12 +25,20 @@ function runAnimation() {
       }
 
       var fStandarMapping = (pad.mapping != undefined && pad.mapping === "standard");
-      var gpVisualizer = fStandarMapping ? new StandardGamepadVisualizer(i) : new GenericGamepadVisualizer(pad);
-      gpVisualizer.UpdateView(pad);
-
-      UpdateGamepadStateTable(pad, i);
+      var gpVisualizer = fStandarMapping ? new StandardGamepadVisualizer(pad) : new GenericGamepadVisualizer(pad);
+      g_gamepadVisualizers[i] = gpVisualizer;
+    } else {
+      if (g_gamepadVisualizers[i] != undefined) {
+        g_gamepadVisualizers[i].fRetired = true;
+      }
     }
   }
+
+  for (var i = 0; i < g_gamepadVisualizers.length; i++) {
+    var gpVisualizer = g_gamepadVisualizers[i];
+    gpVisualizer.UpdateView();
+  }
+  
 
   window.requestAnimationFrame(runAnimation);
 }
