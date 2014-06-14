@@ -38,6 +38,7 @@ function StandardGamepadVisualizer(pad) {
       }
     } else {
       containerElem.innerHTML = "<div class='gpNotConnectedText'>Gamepad not connected.</div>";
+      ClearGamepadStateTableRow(this.idx);
     }
   }
 
@@ -136,6 +137,7 @@ function GenericGamepadVisualizer(pad) {
       }
     } else {
       containerElem.innerHTML = "<div class='gpNotConnectedText'>Gamepad not connected.</div>";
+      ClearGamepadStateTableRow(this.idx);
     }
   }
   this.Init(pad);

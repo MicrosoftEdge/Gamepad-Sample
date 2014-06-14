@@ -36,7 +36,9 @@ function runAnimation() {
 
   for (var i = 0; i < g_gamepadVisualizers.length; i++) {
     var gpVisualizer = g_gamepadVisualizers[i];
-    gpVisualizer.UpdateView();
+    if (g_gamepadVisualizers[i] != undefined) {
+      gpVisualizer.UpdateView();
+    }
   }
   
 
@@ -86,4 +88,9 @@ function UpdateGamepadStateTable(gamepad, index) {
   newRow = newRow.replace(/gpId/g, idStr);
   var containerElem = document.getElementById("gpStateTableRow" + index);
   containerElem.innerHTML = newRow.replace(/\[#\]/g, index);
+}
+
+function ClearGamepadStateTableRow(index) {
+  var containerElem = document.getElementById("gpStateTableRow" + index);
+  containerElem.innerHTML = "";
 }
