@@ -1,5 +1,11 @@
 .gpTableCell {
-    border: solid 2px black;
+    border: solid 2px gray;
+    border-radius: 6px;
+}
+
+.gpTableCellUnConnected {
+    border-color: lightgray;
+    color: gray;
 }
 
 .gpNotConnectedText {
@@ -11,14 +17,15 @@
     border-collapse: collapse;
 }
 
-    #gamepadStateTable th {
-        font-weight: bold;
-    }
+#gamepadStateTable th {
+    font-weight: bold;
+    text-align:left;
+}
 
-    #gamepadStateTable td {
-        border: solid 1px #0094FF;
-        padding: 1px 5px 1px 5px;
-    }
+#gamepadStateTable td, #gamepadStateTable th {
+    border: solid 1px #0094FF;
+    padding: 1px 5px 1px 5px;
+}
 
 .AxisVisualizer {
     width: 108px;

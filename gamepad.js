@@ -1,3 +1,5 @@
+"use strict";
+
 function Init() {
     if (navigator.getGamepads === undefined) {
         document.getElementById("gamepadSupportedDiv").style.display = "block";
@@ -13,22 +15,23 @@ function Init() {
 var buttonPressedOnAnyGamepadEver = false;
 var gamepadVisualizers = [];
 function runAnimation() {
-
     // Get the latest gamepad state.
     var gamepads = navigator.getGamepads();
     for (var i = 0; i < gamepads.length; i++) {
         var pad = gamepads[i];
         if (pad) {
-
+            // Gamepads physically plugged into the system will not be visible to JavaScript until
+            // the user has pressed a button on a gamepad. Note that each browser has slightly different
+            // behavior for which buttons need to be pressed.
             if (!buttonPressedOnAnyGamepadEver) {
                 document.getElementById("buttonNeverPressedDiv").style.display = "none";
                 document.getElementById("buttonPressedDiv").style.display = "block";
                 buttonPressedOnAnyGamepadEver = true;
             }
 
-            var fStandardMapping = (pad.mapping && pad.mapping === "standard");
-            var gpVisualizer = fStandardMapping ? new StandardGamepadVisualizer(pad) : new GenericGamepadVisualizer(pad);
-            gamepadVisualizers[i] = gpVisualizer;
+            var usingStandardMapping = (pad.mapping && pad.mapping === "standard");
+            var gamepadVisualizer = usingStandardMapping ? new StandardGamepadVisualizer(pad) : new GenericGamepadVisualizer(pad);
+            gamepadVisualizers[i] = gamepadVisualizer;
         } else {
             if (gamepadVisualizers[i]) {
                 gamepadVisualizers[i].fRetired = true;
@@ -37,9 +40,9 @@ function runAnimation() {
     }
 
     for (var i = 0; i < gamepadVisualizers.length; i++) {
-        var gpVisualizer = gamepadVisualizers[i];
+        var gamepadVisualizer = gamepadVisualizers[i];
         if (gamepadVisualizers[i]) {
-            gpVisualizer.UpdateView();
+            gamepadVisualizer.UpdateView();
         }
     }
 
@@ -55,7 +58,7 @@ function FloatValueAsString(flValue) {
     return strVal;
 }
 
-g_stateTableRowTemplate = '\
+var g_stateTableRowTemplate = '\
   <td><div>gpIndex</div></td>\
   <td><div>gpTimestamp</div></td>\
   <td><div>gpMapping</div></td>\

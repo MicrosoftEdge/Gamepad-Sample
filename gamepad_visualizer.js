@@ -1,3 +1,5 @@
+"use strict";
+
 // --------------------------------------
 // StandardGamepadVisualizer
 // --------------------------------------
@@ -35,10 +37,12 @@ function StandardGamepadVisualizer(pad) {
                 this.UpdateButtons(pad);
 
                 UpdateGamepadStateTable(pad, pad.index);
+                containerElem.classList.remove("gpTableCellUnConnected");
             }
         } else {
             containerElem.innerHTML = "<div class='gpNotConnectedText'>Gamepad not connected.</div>";
             ClearGamepadStateTableRow(this.index);
+            containerElem.classList.add("gpTableCellUnConnected");
         }
     }
 
@@ -134,10 +138,12 @@ function GenericGamepadVisualizer(pad) {
                 }
 
                 UpdateGamepadStateTable(pad, pad.index);
+                containerElem.classList.remove("gpTableCellUnConnected");
             }
         } else {
             containerElem.innerHTML = "<div class='gpNotConnectedText'>Gamepad not connected.</div>";
             ClearGamepadStateTableRow(this.index);
+            containerElem.classList.add("gpTableCellUnConnected");
         }
     }
     this.Init(pad);
@@ -267,7 +273,7 @@ function DigitalButtonVisualizer(elemId) {
     }
 }
 
-g_starndardGamepadVisualizerTemplate = '\
+var g_starndardGamepadVisualizerTemplate = '\
   <table class="gamepadVisualizer">\
     <tr>\
       <th></th>\

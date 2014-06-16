@@ -13,8 +13,8 @@
         <div id="buttonNeverPressedDiv">Please press a button on any gamepad.</div>
         <div id="buttonPressedDiv" style="display:none;">
             <table id="gamepadStateTable" cellspacing="0">
-                <tr>Gamepad State Table</tr>
-                <tr><td>Idx</td><td>Timestamp</td><td>Mapping</td><td>Connected</td><td>Id</td></tr>
+                <tr><td colspan="5">Gamepad State Table</td></tr>
+                <tr><th>Idx</th><th>Timestamp</th><th>Mapping</th><th>Connected</th><th>Id</th></tr>
                 <tr id="gpStateTableRow0"></tr>
                 <tr id="gpStateTableRow1"></tr>
                 <tr id="gpStateTableRow2"></tr>
@@ -24,10 +24,10 @@
             <br />
 
             <table class="gpTable">
-                <tr><td id="gp0Cell" class="gpTableCell">Gamepad not connected</td></tr>
-                <tr><td id="gp1Cell" class="gpTableCell">Gamepad not connected</td></tr>
-                <tr><td id="gp2Cell" class="gpTableCell">Gamepad not connected</td></tr>
-                <tr><td id="gp3Cell" class="gpTableCell">Gamepad not connected</td></tr>
+                <tr><td id="gp0Cell" class="gpTableCell gpTableCellUnConnected">Gamepad not connected</td></tr>
+                <tr><td id="gp1Cell" class="gpTableCell gpTableCellUnConnected">Gamepad not connected</td></tr>
+                <tr><td id="gp2Cell" class="gpTableCell gpTableCellUnConnected">Gamepad not connected</td></tr>
+                <tr><td id="gp3Cell" class="gpTableCell gpTableCellUnConnected">Gamepad not connected</td></tr>
             </table>
         </div>
     </div>
