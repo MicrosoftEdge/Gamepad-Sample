@@ -23,7 +23,7 @@
 .AxisVisualizer {
   width: 108px;
   height: 108px;
-  background-image: url(images\\crosshair_ball3.png), url(images\\grid.png);
+  background-image: url(images/crosshair_ball3.png), url(images/grid.png);
   background-position: 10px 10px, 4px 4px;
   background-repeat: no-repeat;
 }
@@ -31,7 +31,7 @@
 .AnalogButtonVisualizer {
   width: 30px;
   height: 100px;
-  background-image: url(images\\trigger_meter_fill.png), url(images\\trigger_meter.png);
+  background-image: url(images/trigger_meter_fill.png), url(images/trigger_meter.png);
   background-repeat: no-repeat;
   font-weight: bold;
   text-align: center;
@@ -71,7 +71,7 @@
   left: 10px;
   width: 65px;
   height: 64px;
-  background-image: url(images\\dpad.png);
+  background-image: url(images/dpad.png);
 }
 
 .btnDU, .btnDL, .btnDR, .btnDD {
