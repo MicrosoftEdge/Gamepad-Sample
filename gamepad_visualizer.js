@@ -3,21 +3,21 @@
 // --------------------------------------
 function StandardGamepadVisualizer(pad) {
   this.pad = pad;
-  this.idx = pad.index;
-  this.containerElemId = "gp" + this.idx + "Cell";
-  this.leftThumbVisualizer = new AxisVisualizer("gp" + this.idx + "leftThumb");
-  this.rightThumbVisualizer = new AxisVisualizer("gp" + this.idx + "rightThumb");
-  this.leftTriggerVisualizer = new AnalogButtonVisualizer("gp" + this.idx + "LT");
-  this.rightTriggerVisualizer = new AnalogButtonVisualizer("gp" + this.idx + "RT");
+  this.index = pad.index;
+  this.containerElemId = "gp" + this.index + "Cell";
+  this.leftThumbVisualizer = new AxisVisualizer("gp" + this.index + "leftThumb");
+  this.rightThumbVisualizer = new AxisVisualizer("gp" + this.index + "rightThumb");
+  this.leftTriggerVisualizer = new AnalogButtonVisualizer("gp" + this.index + "LT");
+  this.rightTriggerVisualizer = new AnalogButtonVisualizer("gp" + this.index + "RT");
   this.fRetired = false;
 
   this.UpdateView = function StandardGamepadVisualizer_UpdateView() {
     var pad = this.pad;
     var containerElem = document.getElementById(this.containerElemId);
 
-    if (pad != undefined && this.fRetired != true) {
+    if (pad && !this.fRetired) {
       if (pad.mapping === "standard") {
-        var templateStr = g_starndardGamepadVisualizerTemplate.replace(/gp\[#\]/g, "gp" + this.idx);
+        var templateStr = g_starndardGamepadVisualizerTemplate.replace(/gp\[#\]/g, "gp" + this.index);
         containerElem.innerHTML = templateStr;
 
         this.leftThumbVisualizer.setXAxisValue(pad.axes[0]);
@@ -38,33 +38,33 @@ function StandardGamepadVisualizer(pad) {
       }
     } else {
       containerElem.innerHTML = "<div class='gpNotConnectedText'>Gamepad not connected.</div>";
-      ClearGamepadStateTableRow(this.idx);
+      ClearGamepadStateTableRow(this.index);
     }
   }
 
   this.buttonMap = [
-    { buttonIdx: 0, elemIdTemplate: "gp[#]BtnA" },
-    { buttonIdx: 1, elemIdTemplate: "gp[#]BtnB" },
-    { buttonIdx: 2, elemIdTemplate: "gp[#]BtnX" },
-    { buttonIdx: 3, elemIdTemplate: "gp[#]BtnY" },
-    { buttonIdx: 4, elemIdTemplate: "gp[#]BtnLB" },
-    { buttonIdx: 5, elemIdTemplate: "gp[#]BtnRB" },
-    { buttonIdx: 8, elemIdTemplate: "gp[#]BtnSelect" },
-    { buttonIdx: 9, elemIdTemplate: "gp[#]BtnStart" },
-    { buttonIdx: 10, elemIdTemplate: "gp[#]BtnLThumb" },
-    { buttonIdx: 11, elemIdTemplate: "gp[#]BtnRThumb" },
-    { buttonIdx: 12, elemIdTemplate: "gp[#]BtnDU" },
-    { buttonIdx: 13, elemIdTemplate: "gp[#]BtnDD" },
-    { buttonIdx: 14, elemIdTemplate: "gp[#]BtnDL" },
-    { buttonIdx: 15, elemIdTemplate: "gp[#]BtnDR" }
+    { buttonIndex: 0, elemIdTemplate: "gp[#]BtnA" },
+    { buttonIndex: 1, elemIdTemplate: "gp[#]BtnB" },
+    { buttonIndex: 2, elemIdTemplate: "gp[#]BtnX" },
+    { buttonIndex: 3, elemIdTemplate: "gp[#]BtnY" },
+    { buttonIndex: 4, elemIdTemplate: "gp[#]BtnLB" },
+    { buttonIndex: 5, elemIdTemplate: "gp[#]BtnRB" },
+    { buttonIndex: 8, elemIdTemplate: "gp[#]BtnSelect" },
+    { buttonIndex: 9, elemIdTemplate: "gp[#]BtnStart" },
+    { buttonIndex: 10, elemIdTemplate: "gp[#]BtnLThumb" },
+    { buttonIndex: 11, elemIdTemplate: "gp[#]BtnRThumb" },
+    { buttonIndex: 12, elemIdTemplate: "gp[#]BtnDU" },
+    { buttonIndex: 13, elemIdTemplate: "gp[#]BtnDD" },
+    { buttonIndex: 14, elemIdTemplate: "gp[#]BtnDL" },
+    { buttonIndex: 15, elemIdTemplate: "gp[#]BtnDR" }
   ];
 
   this.UpdateButtons = function StandardGamepadVisualizer_UpdateButtons(pad) {
     for (var i = 0; i < this.buttonMap.length; i++) {
       var visualizer = this.buttonMap[i].visualizer;
-      if (this.buttonMap[i].buttonIdx < pad.buttons.length) {
-        var idx = this.buttonMap[i].buttonIdx;
-        var button = pad.buttons[idx];
+      if (this.buttonMap[i].buttonIndex < pad.buttons.length) {
+        var index = this.buttonMap[i].buttonIndex;
+        var button = pad.buttons[index];
         visualizer.setValue(button.value, button.pressed);
       }
     }
@@ -72,7 +72,7 @@ function StandardGamepadVisualizer(pad) {
 
   this.Init = function _Init() {
     for (var i = 0; i < this.buttonMap.length; i++) {
-      var elemId = this.buttonMap[i].elemIdTemplate.replace(/\[#\]/g, this.idx);
+      var elemId = this.buttonMap[i].elemIdTemplate.replace(/\[#\]/g, this.index);
       this.buttonMap[i].visualizer = new DigitalButtonVisualizer(elemId);
     }
   }
@@ -85,8 +85,8 @@ function StandardGamepadVisualizer(pad) {
 // --------------------------------------
 function GenericGamepadVisualizer(pad) {
   this.pad = pad;
-  this.idx = pad.index;
-  this.containerElemId = "gp" + this.idx + "Cell";
+  this.index = pad.index;
+  this.containerElemId = "gp" + this.index + "Cell";
   this.fRetired = false;
 
   this.Init = function GenericGamepadVisualizer_Init(pad) {
@@ -94,17 +94,17 @@ function GenericGamepadVisualizer(pad) {
     var strInject = "";
 
     var buttonTemplateStr = '<div id="gp[#]" class="AnalogButtonVisualizer VisualizerGeneric" style="">[BTN#]<div id="val"></div></div>';
-    for (var idx = 0; idx < pad.buttons.length; idx++) {
-      var elemId = "gp" + this.idx + "Btn" + idx;
+    for (var index = 0; index < pad.buttons.length; index++) {
+      var elemId = "gp" + this.index + "Btn" + index;
       var buttonStr = buttonTemplateStr.replace(/gp\[#\]/g, elemId);
-      buttonStr = buttonStr.replace(/\[BTN#\]/g, "B" + idx);
+      buttonStr = buttonStr.replace(/\[BTN#\]/g, "B" + index);
       strInject += buttonStr;
     }
     strInject += "<br>";
 
     var axisTemplateStr = '<div id="gp[#]" class="AxisVisualizer VisualizerGeneric"><div id="val"></div></div>';
-    for (var idx = 0; idx < pad.axes.length; idx += 2) {
-      var elemId = "gp" + this.idx + "Axis" + idx;
+    for (var index = 0; index < pad.axes.length; index += 2) {
+      var elemId = "gp" + this.index + "Axis" + index;
       var axisStr = axisTemplateStr.replace(/gp\[#\]/g, elemId);
       strInject += axisStr;
     }
@@ -115,21 +115,21 @@ function GenericGamepadVisualizer(pad) {
   this.UpdateView = function GenericGamepadVisualizer_UpdateView() {
     var pad = this.pad;
     var containerElem = document.getElementById(this.containerElemId);
-    if (pad != undefined && this.fRetired != true) {
-      if (pad.mapping === "" /*firefox*/) {
-        for (var idx = 0; idx < pad.buttons.length; idx++) {
-          var elemId = "gp" + this.idx + "Btn" + idx;
+    if (pad && !this.fRetired) {
+      if (pad.mapping === "" /* Firefox doesn't use the "standard" mapping. */) {
+        for (var index = 0; index < pad.buttons.length; index++) {
+          var elemId = "gp" + this.index + "Btn" + index;
           var visualizer = new AnalogButtonVisualizer(elemId);
-          var button = pad.buttons[idx];
+          var button = pad.buttons[index];
           visualizer.setValue(button.value, button.pressed);
         }
 
-        for (var idx = 0; idx < pad.axes.length; idx += 2) {
-          var elemId = "gp" + this.idx + "Axis" + idx;
+        for (var index = 0; index < pad.axes.length; index += 2) {
+          var elemId = "gp" + this.index + "Axis" + index;
           var visualizer = new AxisVisualizer(elemId);
-          visualizer.setXAxisValue(pad.axes[idx]);
-          if (pad.axes[idx + 1] != undefined) {
-            visualizer.setYAxisValue(pad.axes[idx + 1]);
+          visualizer.setXAxisValue(pad.axes[index]);
+          if (pad.axes[index + 1]) {
+            visualizer.setYAxisValue(pad.axes[index + 1]);
           }
         }
 
@@ -137,7 +137,7 @@ function GenericGamepadVisualizer(pad) {
       }
     } else {
       containerElem.innerHTML = "<div class='gpNotConnectedText'>Gamepad not connected.</div>";
-      ClearGamepadStateTableRow(this.idx);
+      ClearGamepadStateTableRow(this.index);
     }
   }
   this.Init(pad);
@@ -208,7 +208,7 @@ function AnalogButtonVisualizer(elemId) {
     var top = 100 - cxHeight - 1
     elem.style.backgroundPosition = "1px " + top + "px, 0px 0px";
     elem.style.backgroundSize = "28px " + cxHeight + "px, 30px 100px";
-    if (this.fIsPressed === true) {
+    if (this.fIsPressed) {
       elem.style.color = "salmon";
     }
     else {
@@ -251,7 +251,7 @@ function DigitalButtonVisualizer(elemId) {
       elem.style.backgroundColor = "transparent";
     }
 
-    if (this.fIsPressed === true) {
+    if (this.fIsPressed) {
       elem.style.color = "salmon";
     }
     else {

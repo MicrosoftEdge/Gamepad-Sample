@@ -10,38 +10,39 @@ function Init() {
 // --------------------------------------
 // Animation loop
 // --------------------------------------
-var g_fButtonPressedOnAnyGamepadEver = false;
-var g_gamepadVisualizers = new Array();
+var buttonPressedOnAnyGamepadEver = false;
+var gamepadVisualizers = [];
 function runAnimation() {
+
+  // Get the latest gamepad state.
   var gamepads = navigator.getGamepads();
   for (var i = 0; i < gamepads.length; i++) {
     var pad = gamepads[i];
-    if (pad != undefined) {
+    if (pad) {
 
-      if (g_fButtonPressedOnAnyGamepadEver === false) {
+      if (!buttonPressedOnAnyGamepadEver) {
         document.getElementById("buttonNeverPressedDiv").style.display = "none";
         document.getElementById("buttonPressedDiv").style.display = "block";
-        g_fButtonPressedOnAnyGamepadEver = true;
+        buttonPressedOnAnyGamepadEver = true;
       }
 
-      var fStandarMapping = (pad.mapping != undefined && pad.mapping === "standard");
-      var gpVisualizer = fStandarMapping ? new StandardGamepadVisualizer(pad) : new GenericGamepadVisualizer(pad);
-      g_gamepadVisualizers[i] = gpVisualizer;
+      var fStandardMapping = (pad.mapping && pad.mapping === "standard");
+      var gpVisualizer = fStandardMapping ? new StandardGamepadVisualizer(pad) : new GenericGamepadVisualizer(pad);
+      gamepadVisualizers[i] = gpVisualizer;
     } else {
-      if (g_gamepadVisualizers[i] != undefined) {
-        g_gamepadVisualizers[i].fRetired = true;
+      if (gamepadVisualizers[i]) {
+        gamepadVisualizers[i].fRetired = true;
       }
     }
   }
 
-  for (var i = 0; i < g_gamepadVisualizers.length; i++) {
-    var gpVisualizer = g_gamepadVisualizers[i];
-    if (g_gamepadVisualizers[i] != undefined) {
+  for (var i = 0; i < gamepadVisualizers.length; i++) {
+    var gpVisualizer = gamepadVisualizers[i];
+    if (gamepadVisualizers[i]) {
       gpVisualizer.UpdateView();
     }
   }
   
-
   window.requestAnimationFrame(runAnimation);
 }
 
@@ -54,37 +55,33 @@ function FloatValueAsString(flValue) {
   return strVal;
 }
 
-function BoolToYesNo(boolean) {
-  return boolean ? "yes" : "no";
-}
-function BoolToString(boolean) {
-  return boolean ? "true" : "false";
-}
-
 g_stateTableRowTemplate = '\
   <td><div>gpIndex</div></td>\
   <td><div>gpTimestamp</div></td>\
   <td><div>gpMapping</div></td>\
+  <td><div>gpConnected</div></td>\
   <td><div>gpId</div></td>\
 ';
 
 function UpdateGamepadStateTable(gamepad, index) {
-  var fConnected = false;
+  var connectedStr = "N/A";
   var indexStr = "N/A";
   var timestampStr = "N/A";
   var mappingStr = "N/A";
   var idStr = "N/A";
-  if (gamepad != undefined) {
-    idStr = (gamepad.id != undefined) ? gamepad.id : "undefined";
-    mappingStr = (gamepad.mapping != undefined) ? gamepad.mapping : "undefined";
-    indexStr = (gamepad.index != undefined) ? gamepad.index : "undefined";
-    timestampStr = (gamepad.timestamp != undefined) ? (gamepad.timestamp / 1000) + "s" : "undefined";
+  if (gamepad) {
+    idStr = (gamepad.id) ? gamepad.id : "undefined";
+    mappingStr = (gamepad.mapping) ? gamepad.mapping : "undefined";
+    indexStr = (gamepad.index) ? gamepad.index : "undefined";
+    connectedStr = (gamepad.connected !== undefined) ? gamepad.connected : "undefined";
+    timestampStr = (gamepad.timestamp) ? (gamepad.timestamp / 1000) + "s" : "undefined";
   }
 
   var newRow = g_stateTableRowTemplate;
   newRow = newRow.replace(/gpIndex/g, indexStr);
   newRow = newRow.replace(/gpTimestamp/g, timestampStr);
   newRow = newRow.replace(/gpMapping/g, mappingStr);
+  newRow = newRow.replace(/gpConnected/g, connectedStr);
   newRow = newRow.replace(/gpId/g, idStr);
   var containerElem = document.getElementById("gpStateTableRow" + index);
   containerElem.innerHTML = newRow.replace(/\[#\]/g, index);
