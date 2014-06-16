@@ -11,15 +11,15 @@ function StandardGamepadVisualizer(pad) {
     this.rightThumbVisualizer = new AxisVisualizer("gp" + this.index + "rightThumb");
     this.leftTriggerVisualizer = new AnalogButtonVisualizer("gp" + this.index + "LT");
     this.rightTriggerVisualizer = new AnalogButtonVisualizer("gp" + this.index + "RT");
-    this.fRetired = false;
+    this.retired = false;
 
     this.UpdateView = function StandardGamepadVisualizer_UpdateView() {
         var pad = this.pad;
         var containerElem = document.getElementById(this.containerElemId);
 
-        if (pad && !this.fRetired) {
+        if (pad && !this.retired) {
             if (pad.mapping === "standard") {
-                var templateStr = g_starndardGamepadVisualizerTemplate.replace(/gp\[#\]/g, "gp" + this.index);
+                var templateStr = starndardGamepadVisualizerTemplate.replace(/gp\[#\]/g, "gp" + this.index);
                 containerElem.innerHTML = templateStr;
 
                 this.leftThumbVisualizer.setXAxisValue(pad.axes[0]);
@@ -91,7 +91,7 @@ function GenericGamepadVisualizer(pad) {
     this.pad = pad;
     this.index = pad.index;
     this.containerElemId = "gp" + this.index + "Cell";
-    this.fRetired = false;
+    this.retired = false;
 
     this.Init = function GenericGamepadVisualizer_Init(pad) {
         var containerElem = document.getElementById(this.containerElemId);
@@ -119,7 +119,7 @@ function GenericGamepadVisualizer(pad) {
     this.UpdateView = function GenericGamepadVisualizer_UpdateView() {
         var pad = this.pad;
         var containerElem = document.getElementById(this.containerElemId);
-        if (pad && !this.fRetired) {
+        if (pad && !this.retired) {
             if (pad.mapping === "" /* Firefox doesn't use the "standard" mapping. */) {
                 for (var index = 0; index < pad.buttons.length; index++) {
                     var elemId = "gp" + this.index + "Btn" + index;
@@ -273,7 +273,7 @@ function DigitalButtonVisualizer(elemId) {
     }
 }
 
-var g_starndardGamepadVisualizerTemplate = '\
+var starndardGamepadVisualizerTemplate = '\
   <table class="gamepadVisualizer">\
     <tr>\
       <th></th>\

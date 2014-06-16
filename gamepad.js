@@ -34,7 +34,7 @@ function runAnimation() {
             gamepadVisualizers[i] = gamepadVisualizer;
         } else {
             if (gamepadVisualizers[i]) {
-                gamepadVisualizers[i].fRetired = true;
+                gamepadVisualizers[i].retired = true;
             }
         }
     }
@@ -58,7 +58,7 @@ function FloatValueAsString(flValue) {
     return strVal;
 }
 
-var g_stateTableRowTemplate = '\
+var stateTableRowTemplate = '\
   <td><div>gpIndex</div></td>\
   <td><div>gpTimestamp</div></td>\
   <td><div>gpMapping</div></td>\
@@ -73,14 +73,14 @@ function UpdateGamepadStateTable(gamepad, index) {
     var mappingStr = "N/A";
     var idStr = "N/A";
     if (gamepad) {
-        idStr = (gamepad.id) ? gamepad.id : "undefined";
-        mappingStr = (gamepad.mapping) ? gamepad.mapping : "undefined";
-        indexStr = (gamepad.index) ? gamepad.index : "undefined";
+        idStr = (gamepad.id !== undefined) ? gamepad.id : "undefined";
+        mappingStr = (gamepad.mapping !== undefined) ? gamepad.mapping : "undefined";
+        indexStr = (gamepad.index !== undefined) ? gamepad.index : "undefined";
         connectedStr = (gamepad.connected !== undefined) ? gamepad.connected : "undefined";
-        timestampStr = (gamepad.timestamp) ? (gamepad.timestamp / 1000) + "s" : "undefined";
+        timestampStr = (gamepad.timestamp !== undefined) ? (gamepad.timestamp / 1000) + "s" : "undefined";
     }
 
-    var newRow = g_stateTableRowTemplate;
+    var newRow = stateTableRowTemplate;
     newRow = newRow.replace(/gpIndex/g, indexStr);
     newRow = newRow.replace(/gpTimestamp/g, timestampStr);
     newRow = newRow.replace(/gpMapping/g, mappingStr);
